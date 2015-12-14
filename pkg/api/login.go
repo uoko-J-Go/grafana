@@ -27,7 +27,14 @@ func LoginView(c *middleware.Context) {
 	settings := c.Data["Settings"].(map[string]interface{})
 	settings["googleAuthEnabled"] = setting.OAuthService.Google
 	settings["githubAuthEnabled"] = setting.OAuthService.GitHub
+	settings["uokoAuthEnabled"] = setting.OAuthService.Uoko
 	settings["disableUserSignUp"] = !setting.AllowUserSignUp
+
+if setting.OAuthService.Uoko {
+	c.Redirect("http://www.baidu.com")
+}else{
+	c.Redirect("http://www.google.com")	
+}
 
 	if !tryLoginUsingRememberCookie(c) {
 		c.HTML(200, VIEW_INDEX)

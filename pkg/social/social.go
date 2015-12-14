@@ -99,11 +99,11 @@ func NewOAuthService() {
 			}
 		}
 		
-		// Google.
+		// Uoko.
 		if name == "uoko" {
 			setting.OAuthService.Uoko = true
-			SocialMap["uoko"] = &SocialGoogle{
-				Config: &config, allowedDomains: info.AllowedDomains,
+			SocialMap["uoko"] = &SocialUoko{
+				Config: &config, 
 				apiUrl:      info.ApiUrl,
 				allowSignup: info.AllowSignup,
 			}
@@ -377,9 +377,18 @@ func (s *SocialGoogle) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
 
 
 
-//
-// open api : http://openid.net
-//
+// 
+//                                          X                 XXXXXXX
+//                                          X                XXX     XXXXX
+// X            XX        XXXXXXXXXX        X                 X          XX
+// X             X       XX        XXX      X    XXXXX        X           XX
+// X             X      XX           XX     XXXXX             X            X
+// X            XX      X             X     XXX               X           XX
+// XX           X       X            XX     X XXX             X          XX
+//  XX        XX        X           XX      X   XXXXX         XX      XXX
+//   XXXXXXXXXX         XX       XXX        X       XXXXX      XXXXXXX
+//                       XXXXXXXX           X
+
 type SocialUoko struct {
 	*oauth2.Config
 	allowedDomains []string
