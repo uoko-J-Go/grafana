@@ -42,7 +42,7 @@ func NewOAuthService() {
 	setting.OAuthService = &setting.OAuther{}
 	setting.OAuthService.OAuthInfos = make(map[string]*setting.OAuthInfo)
 
-	allOauthes := []string{"github", "google"}
+	allOauthes := []string{"github", "google", "uoko"}
 
 	for _, name := range allOauthes {
 		sec := setting.Cfg.Section("auth." + name)
@@ -93,6 +93,16 @@ func NewOAuthService() {
 		if name == "google" {
 			setting.OAuthService.Google = true
 			SocialMap["google"] = &SocialGoogle{
+				Config: &config, allowedDomains: info.AllowedDomains,
+				apiUrl:      info.ApiUrl,
+				allowSignup: info.AllowSignup,
+			}
+		}
+		
+		// Google.
+		if name == "uoko" {
+			setting.OAuthService.Uoko = true
+			SocialMap["uoko"] = &SocialGoogle{
 				Config: &config, allowedDomains: info.AllowedDomains,
 				apiUrl:      info.ApiUrl,
 				allowSignup: info.AllowSignup,
@@ -342,6 +352,54 @@ func (s *SocialGoogle) IsSignupAllowed() bool {
 }
 
 func (s *SocialGoogle) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
+	var data struct {
+		Id    string `json:"id"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
+	}
+	var err error
+
+	client := s.Client(oauth2.NoContext, token)
+	r, err := client.Get(s.apiUrl)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	if err = json.NewDecoder(r.Body).Decode(&data); err != nil {
+		return nil, err
+	}
+	return &BasicUserInfo{
+		Identity: data.Id,
+		Name:     data.Name,
+		Email:    data.Email,
+	}, nil
+}
+
+
+
+//
+// open api : http://openid.net
+//
+type SocialUoko struct {
+	*oauth2.Config
+	allowedDomains []string
+	apiUrl         string
+	allowSignup    bool
+}
+
+func (s *SocialUoko) Type() int {
+	return int(models.GOOGLE)
+}
+
+func (s *SocialUoko) IsEmailAllowed(email string) bool {
+	return isEmailAllowed(email, s.allowedDomains)
+}
+
+func (s *SocialUoko) IsSignupAllowed() bool {
+	return s.allowSignup
+}
+
+func (s *SocialUoko) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
 	var data struct {
 		Id    string `json:"id"`
 		Name  string `json:"name"`
