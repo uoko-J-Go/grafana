@@ -393,11 +393,11 @@ type SocialUoko struct {
 	*oauth2.Config
 	allowedDomains []string
 	apiUrl         string
-	allowSignup    bool
+	allowSignup	bool
 }
 
 func (s *SocialUoko) Type() int {
-	return int(models.GOOGLE)
+	return int(models.Uoko)
 }
 
 func (s *SocialUoko) IsEmailAllowed(email string) bool {
@@ -410,8 +410,8 @@ func (s *SocialUoko) IsSignupAllowed() bool {
 
 func (s *SocialUoko) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
 	var data struct {
-		Id    string `json:"id"`
-		Name  string `json:"name"`
+		Id    string `json:"sub"`
+		Name  string `json:"nickname"`
 		Email string `json:"email"`
 	}
 	var err error
@@ -422,12 +422,14 @@ func (s *SocialUoko) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
 		return nil, err
 	}
 	defer r.Body.Close()
+	
 	if err = json.NewDecoder(r.Body).Decode(&data); err != nil {
 		return nil, err
 	}
 	return &BasicUserInfo{
 		Identity: data.Id,
 		Name:     data.Name,
-		Email:    data.Email,
+		Email:    data.Email
+		Company: "UOKO"
 	}, nil
 }
