@@ -429,7 +429,7 @@ func (s *SocialUoko) UserInfo(token *oauth2.Token) (*BasicUserInfo, error) {
 	return &BasicUserInfo{
 		Identity: data.Id,
 		Name:     data.Name,
-		Email:    data.Email
-		Company: "UOKO"
+		Email:    data.Email,
+		Company: "UOKO",
 	}, nil
 }
