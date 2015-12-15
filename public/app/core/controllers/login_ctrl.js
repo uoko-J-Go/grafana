@@ -17,6 +17,7 @@ function (angular, coreModule, config) {
 
     $scope.googleAuthEnabled = config.googleAuthEnabled;
     $scope.githubAuthEnabled = config.githubAuthEnabled;
+    $scope.uokoAuthEnabled = config.uokoAuthEnabled;
     $scope.disableUserSignUp = config.disableUserSignUp;
 
     $scope.loginMode = true;
