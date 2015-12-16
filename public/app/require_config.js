@@ -1,5 +1,5 @@
 require.config({
-  urlArgs: 'bust=' + 1,// (new Date().getTime()),
+  urlArgs: 'bust=' + (new Date().getTime()),
   baseUrl: 'public',
 
   paths: {
